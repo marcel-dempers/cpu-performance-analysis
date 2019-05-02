@@ -1,0 +1,23 @@
+version: "3"
+services:
+  sample-dotnet:
+    image: aimvector/dotnet-sample
+    build:
+      context: ./dotnet/src
+    ports:
+      - 9001:5000
+    environment:
+      - COMPlus_PerfMapEnabled=1
+  sample-golang:
+    image: aimvector/golang-sample
+    build:
+      context: ./go
+    ports:
+      - 9000:80
+  traffic-generator:
+    image: alpine:3.9
+    depends_on:
+      - sample-dotnet
+      - sample-golang
+    command: >
+      /bin/sh -c "apk add --no-cache curl;sleep 10s; while curl http://sample-dotnet:5000/api/values; curl http://sample-golang/; do  sleep 1s; done"
