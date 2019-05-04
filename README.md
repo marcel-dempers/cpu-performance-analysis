@@ -1,7 +1,7 @@
 # Quickstart example guide to cpu performance analysis for Golang and .NET Core
 CPU performance analysis demo for docker containers using FlameGraphs
 
-![sample](./perf.svg)
+![sample](./example.png)
 
 # Get all the tools
 
