@@ -1,4 +1,4 @@
-# cpu-performance-analysis
+# Quickstart example guide to cpu performance analysis
 CPU performance analysis demo for docker containers using FlameGraphs
 
 ![sample](./perf.svg)
