@@ -70,7 +70,7 @@ Now start the flamegraph container from the same folder here
 docker run -it --rm --entrypoint /bin/bash -v ${PWD}:/out aimvector/flamegraph
 ```
 
-Run `./generate.sh` to generate the `perf.svg`
+Run `cd ./FlameGraph/ && ./generate.sh` to generate the `perf.svg`
 
 # KUBERNETES
 
