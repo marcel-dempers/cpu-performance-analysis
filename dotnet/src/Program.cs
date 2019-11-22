@@ -10,10 +10,29 @@ using Microsoft.Extensions.Logging;
 
 namespace src
 {
+    
+    public class Busy
+    {
+        
+        public void StayBusy()
+        {
+            while (true)
+            {   
+                for (var i = 1; i < 1000000; i++){
+                    
+                }
+            }
+        }
+    }
+
     public class Program
     {
+        
         public static void Main(string[] args)
         {
+            var b = new Busy();
+            b.StayBusy();
+
             Console.WriteLine("Hello! I am the dotnet API! V1");
             BuildWebHost(args).Run();
         }
