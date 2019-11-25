@@ -6,12 +6,13 @@ spec:
   hostPID: true
   containers:
   - name: ebpf-profiler
-    image: aimvector/flamegraph
+    image: aimvector/ebpf-tools:azure.4.15.0.1063
     imagePullPolicy: Always
     securityContext:
       privileged: true
     command: ["/bin/bash"]
     args: ["-c", "tail -f /dev/null"]
+    env:
     volumeMounts:
       - mountPath: /var/run/docker.sock
         name: docker
@@ -21,10 +22,10 @@ spec:
         name: fs-cgroup
       - mountPath: /sys/fs/bpf
         name: fs-bpf
-      - mountPath: /lib/modules
-        name: lib-modules
+      # - mountPath: /lib/modules
+      #   name: lib-modules
   nodeSelector:
-    kubernetes.io/hostname: k8s-agentpool2-34804781-0 # you can bind to a specific agent
+    kubernetes.io/hostname: k8s-svcportal-38195078-vmss000000 # you can bind to a specific agent
   volumes:
     - name: docker
       hostPath: 
@@ -38,6 +39,6 @@ spec:
     - name: fs-bpf
       hostPath:
         path: /sys/fs/bpf
-    - name: lib-modules
-      hostPath:
-        path: /lib/modules
+    # - name: lib-modules
+    #   hostPath:
+    #     path: /lib/modules
