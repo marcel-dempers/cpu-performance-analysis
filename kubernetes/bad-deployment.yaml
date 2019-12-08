@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bad-deploy
+  labels:
+    app: example-app
+  annotations:
+spec:
+  selector:
+    matchLabels:
+      app: bad-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bad-app
+    spec:
+      containers:
+      - name: bad-app
+        image: aimvector/dotnet-sample
+        imagePullPolicy: Always
+        env:
+        - name: COMPlus_PerfMapEnabled
+          value: "1"
