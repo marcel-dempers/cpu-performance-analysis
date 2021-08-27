@@ -42,3 +42,9 @@ Be warned! It's armed with priviledges so use with caution and delete it when do
 
 Instead of `docker cp`, you can use `kubectl cp` to copy `out.perf` to your machine where you can run the above flamegraph container.
 So therefore the same concept applies in Kubernetes.
+
+You can get the Linux kernel version of your node by running:
+
+```
+kubectl run alpine --image alpine -- /bin/sh -c "uname -r"
+```
