@@ -7,6 +7,7 @@ spec:
   containers:
   - name: ebpf-profiler
     image: aimvector/ebpf-tools:azure.4.15.0.1063
+    #image: aimvector/ebpf-tools:azure.4.15.0-1092
     imagePullPolicy: Always
     securityContext:
       privileged: true
@@ -22,10 +23,13 @@ spec:
         name: fs-cgroup
       - mountPath: /sys/fs/bpf
         name: fs-bpf
+      - mountPath: /tmp
+        name: tmp
       # - mountPath: /lib/modules
       #   name: lib-modules
   nodeSelector:
-    kubernetes.io/hostname: k8s-svcportal-38195078-vmss000000 # you can bind to a specific agent
+    #kubernetes.io/hostname: k8s-flights-38195078-vmss000000 # you can bind to a specific agent
+    kubernetes.io/hostname: k8s-payments-41153763-vmss000000 # you can bind to a specific agent
   volumes:
     - name: docker
       hostPath: 
@@ -39,6 +43,9 @@ spec:
     - name: fs-bpf
       hostPath:
         path: /sys/fs/bpf
+    - name: tmp
+      hostPath:
+        path: /tmp
     # - name: lib-modules
     #   hostPath:
     #     path: /lib/modules

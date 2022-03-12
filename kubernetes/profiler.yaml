@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ebpf-profiler
+spec:
+  hostPID: true
+  containers:
+  - name: ebpf-profiler
+    image: "aimvector/ebpf-tools:azure.4.15.0-1093"
+    imagePullPolicy: Always
+    securityContext:
+      privileged: true
+    command:
+    - "/bin/bash"
+    - "-c"
+    - |-
+      #BPF_TOOLS_CONTAINERID=$(docker ps | grep k8s_${BPF_TOOLS_CONTAINER}_${BPF_TOOLS_POD} | awk '{print $1}')
+      #BPF_TOOLS_PID=$(docker inspect $BPF_TOOLS_CONTAINERID --format '{{ .State.Pid }}')
+      #echo "profiling pid $BPF_TOOLS_PID for seconds $BPF_TOOLS_SECONDS"
+      echo "profiling for seconds $BPF_TOOLS_SECONDS..."
+      BPF_TOOLS_SECONDS=$(echo $BPF_TOOLS_SECONDS | sed s/\"//g)
+      ./bcc/tools/profile.py -dF 99 -f $BPF_TOOLS_SECONDS | ./FlameGraph/flamegraph.pl > ${BPF_TOOLS_CONTAINER}.svg
+      echo "profiling complete"
+      sleep 900s #gives our script chance to copy out the flamegraph
+    env:
+    - name: BPF_TOOLS_SECONDS
+      value: "180"
+    - name: BPF_TOOLS_POD
+      value: "bad-deploy-6d5cc4d5f6-2jlh9"
+    - name: BPF_TOOLS_CONTAINER
+      value: "bad-app"
+    volumeMounts:
+      - mountPath: /var/run/docker.sock
+        name: docker
+      - mountPath: /sys/kernel/debug
+        name: kernel-debug
+      - mountPath: /sys/fs/cgroup
+        name: fs-cgroup
+      - mountPath: /sys/fs/bpf
+        name: fs-bpf
+  volumes:
+    - name: docker
+      hostPath: 
+        path: /var/run/docker.sock
+    - name: kernel-debug
+      hostPath:
+        path: /sys/kernel/debug
+    - name: fs-cgroup
+      hostPath:
+        path: /sys/fs/cgroup
+    - name: fs-bpf
+      hostPath:
+        path: /sys/fs/bpf
