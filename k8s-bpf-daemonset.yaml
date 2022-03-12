@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bpf
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: bpf-profiler
+  namespace: bpf
+  labels:
+    app: bpf-profiler
+spec:
+  selector:
+    matchLabels:
+      name: bpf-profiler
+  template:
+    metadata:
+      labels:
+        name: bpf-profiler
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      hostPID: true
+      containers:
+      - name: ebpf-profiler
+        image: aimvector/ebpf-tools:azure.4.15.0.1063
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        command: ["/bin/bash"]
+        args: ["-c", "tail -f /dev/null"]
+        env:
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker
+          - mountPath: /sys/kernel/debug
+            name: kernel-debug
+          - mountPath: /sys/fs/cgroup
+            name: fs-cgroup
+          - mountPath: /sys/fs/bpf
+            name: fs-bpf
+      volumes:
+        - name: docker
+          hostPath: 
+            path: /var/run/docker.sock
+        - name: kernel-debug
+          hostPath:
+            path: /sys/kernel/debug
+        - name: fs-cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+        - name: fs-bpf
+          hostPath:
+            path: /sys/fs/bpf
